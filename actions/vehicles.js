@@ -1,15 +1,17 @@
 const Vehicle = require("../models/vehicle")
 const { isInteger } = require("lodash")
+const User = require("../models/user")
 
 const create = async (req) => {
-    let { brand, type, cc } = req.body
+    let { brand, type, cc, owner } = req.body
     cc = parseInt(cc)
     console.log(`Value of cc ${cc}`)
 
     var insert_data = {
         brand,
         type,
-        cc
+        cc,
+        owner
     }
 
     let data = new Vehicle(insert_data)
@@ -25,16 +27,17 @@ const create = async (req) => {
 
 const getAll = async () => {
     try {
-        let query = await Vehicle.find({}).exec()
-        let data = query.map((v, i) => {
-            return {
-                brand: v.brand,
-                type: v.type,
-                cc: v.cc
-            }
-        })
+        let query = await Vehicle.find({})
+            .populate([
+                {
+                    path: 'owner',
+                    model: User
+                }
+            ]).exec()
 
-        return data
+        console.log(`Result ${query}`)
+
+        return query
     } catch (err) {
         throw err
     }
@@ -53,14 +56,15 @@ const getDetail = async (id) => {
 }
 
 const update = async (id, updated_data) => {
-    let { brand, type, cc, fresh } = updated_data
+    let { brand, type, cc, fresh, owner } = updated_data
     let opts = {
         new: fresh === "true" ? true : false
     }
     let data = {
         brand,
         type,
-        cc
+        cc,
+        owner
     }
 
     try {

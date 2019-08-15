@@ -25,6 +25,7 @@ const getAll = async () => {
         let query = await User.find({}).exec()
         let data = query.map((v, i) => {
             return {
+                _id: v.id,
                 name: v.name,
                 email: v.email,
                 phone: v.phone

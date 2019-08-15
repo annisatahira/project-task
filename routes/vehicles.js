@@ -61,6 +61,7 @@ router.put("/:id", async (req, res) => {
         brand: req.body.brand,
         type: req.body.type,
         cc: req.body.cc,
+        owner: req.body.owner,
         fresh: req.body.fresh
     }
 
